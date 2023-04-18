@@ -1,0 +1,90 @@
+import React, { useState, useEffect } from 'react'
+import Table from '@mui/material/Table';
+import TableBody from '@mui/material/TableBody';
+import TableHead from '@mui/material/TableHead';
+import TableRow from '@mui/material/TableRow';
+import TableCell from '@mui/material/TableCell';
+import styled from '@emotion/styled';
+import { Button } from "@mui/material"
+import { NavLink } from "react-router-dom"
+import { getScholarships } from "../../state/api.js"
+
+const AllUsers = () => {
+    const [scholarships, setScholarships] = useState([])
+    const getScholarshipData = async () => {
+        const response = await getScholarships()
+        console.log(response.data)      // gonna store this data in useState array ha tw initially empty array
+        setScholarships(response.data)
+    }
+
+    useEffect(() => {
+        getScholarshipData()
+    }, [])
+
+
+    const deleteUserData = async (id) => {
+        // await deleteUser(id);
+        getScholarshipData();
+    }
+
+    return (
+        <TABLEBODY>
+            <TableHead className='tablehead'>
+                <TableCell>ID</TableCell>
+                <TableCell>Scholarship</TableCell>
+                <TableCell>Elgibility</TableCell>
+                <TableCell>End-Date</TableCell>
+                <TableCell></TableCell>
+
+
+            </TableHead>
+
+            <TableBody>
+                {scholarships.map((currElem) => {
+                    return (
+                        <TableRow key={scholarships._id} className='tablerow'>
+                            <TableCell>{currElem._id}</TableCell>
+                            <TableCell>{currElem.name}</TableCell>
+                            <TableCell>{currElem.elgible}</TableCell>
+                            <TableCell>{currElem.date}</TableCell>
+
+                            <TableCell>
+                                <Button color="primary" variant="contained" style={{ marginRight: 10 }} component={NavLink} to={`/edit/${currElem._id}`}>Edit</Button> {/* change it to currElem.id to use JSON Server */}
+                                <Button color="secondary" variant="contained" onClick={() => deleteUserData(currElem._id)}>Delete</Button> {/* change it to user.id to use JSON Server */}
+                            </TableCell>
+
+                        </TableRow>
+                    )
+
+                })}
+
+
+            </TableBody>
+        </TABLEBODY>
+    )
+}
+
+
+const TABLEBODY = styled(Table)`
+    width: 90%;
+    margin: 50px 0 0 50px;
+
+    
+
+    .tablehead{
+        & > th {            // table cells inspect mein th ha
+        font-size: 20px;
+        background: #000000;
+        color: #FFFFFF;
+    }
+    }
+    
+    .tablerow{
+        & > td{
+        font-size: 15px;
+        
+    }
+    }
+`
+
+export default AllUsers
